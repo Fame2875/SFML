@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <SFML/Graphics.hpp>
 #include<SFML/System.hpp>
 #include<SFML/Window.hpp>
@@ -14,6 +14,12 @@ private:
 	float movementSpeed;
 	float attackCooldown;
 	float attackCooldownMax;
+
+	int hp_ship;
+	int hpMax_ship;
+
+
+
 	//PrivateFunction
 	void initializeVariables();
 	void initializeTexture();
@@ -25,6 +31,15 @@ public:
 
 	//Accessor
 	const sf::Vector2f& getPos() const;
+	const sf::FloatRect getBounds() const;
+	const int& getHp()const;
+	const int& getHpMax()const;
+
+	//modifiers ดัดแปลง
+	void setplayerPosition_OPT1(const sf::Vector2f pos);
+	void setplayerPosition_OPT2(const float x, const float y);
+	void setHp(const int hp);
+	void loseHp(const int value);
 	//Function
 	void move(const float dirX, const float dirV);
 	const bool canAttack();

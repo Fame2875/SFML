@@ -146,12 +146,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GAME.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="GAME.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
