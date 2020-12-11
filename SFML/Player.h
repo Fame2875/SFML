@@ -40,6 +40,7 @@ public:
 	void setplayerPosition_OPT2(const float x, const float y);
 	void setHp(const int hp);
 	void loseHp(const int value);
+	void getHp(const int value);
 	//Function
 	void move(const float dirX, const float dirV);
 	const bool canAttack();

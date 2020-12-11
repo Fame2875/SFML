@@ -10,6 +10,9 @@ void GAME::initializeTextures()
 {
 	this->textures["BULLET"] = new sf::Texture();
 	this->textures["BULLET"]->loadFromFile("Textures/orange_bullet.png");
+
+	this->enemytextures["enemyBULLET"] = new sf::Texture();
+	this->enemytextures["enemyBULLET"]->loadFromFile("Textures/ENEMY_BULLET.png");
 }
 void GAME::initializePlayer()
 {
@@ -18,8 +21,19 @@ void GAME::initializePlayer()
 }
 void GAME::initializeEnemies()
 {
-	this->spawnTimerMax = 50.f;
+	this->spawnTimerMax = 10.f;
 		this->spawnTimer = this->spawnTimerMax;
+}
+void GAME::initializeuniqueEnemy()
+{
+	this->uniquespawnTimerMax = 50.f;
+	this->uniquespawnTimer = this->uniquespawnTimerMax;
+	
+	//this->uniqueenemies = new uniqueEnemy(100.f, 100.f);
+}
+void GAME::initializeMEDKIT()
+{
+
 }
 void GAME::initializeWorld()
 {
@@ -64,6 +78,7 @@ GAME::GAME()
 	this->initializeGUI();
 	this->initializePlayer();
 	this->initializeEnemies();
+	this->initializeuniqueEnemy();
 	this->initializeWorld();
 	this->initializeSystem();
 }
@@ -75,12 +90,26 @@ GAME::~GAME() {
 	for (auto& i : this->textures) {
 		delete i.second;
 	}
+	/*for (auto& i : this->enemytextures) {
+		delete i.second;
+	}*/
 	//Delete Bullets
 	for (auto& i : this->bullets) {
 		delete i;
 	}
+	for (auto& i : this->enemybullet) {
+			delete i;
+		}
 	//Delete enemies
 	for (auto& i : this->enemies) {
+		delete i;
+	}
+	//Delete uniqueenemies
+	for (auto& i : this->uniqueenemies) {
+		delete i;
+	}
+	//Delete MEDKIT
+	for (auto& i : this->medkit) {
 		delete i;
 	}
 }
@@ -183,6 +212,11 @@ void GAME::updateBullet()
 
 }
 
+void GAME::updateenemyBullet()
+{
+
+}
+
 void GAME::updateEnemies()
 {
 	//spawning
@@ -220,6 +254,59 @@ void GAME::updateEnemies()
 
 }
 
+void GAME::updateuniqueEnemy()
+{
+	this->uniquespawnTimer += 0.5;
+	if (this->uniquespawnTimer >= this->uniquespawnTimerMax)
+	{
+		this->uniqueenemies.push_back(new uniqueEnemy(rand() % this->window->getSize().x - 20.f, -100.f));
+		this->uniquespawnTimer = 0;
+	}
+	for (int i =0; i < this->uniqueenemies.size();++i)
+	{
+		this->uniqueenemies[i]->update();
+
+		//ลบเวลายานไปล่างสุด
+		if (this->uniqueenemies[i]->getBounds().top > this->window->getSize().y)
+		{
+			this->uniqueenemies.erase(this->uniqueenemies.begin() + i);
+		}
+		else if (uniqueenemies[i]->getBounds().intersects(this->player->getBounds()))
+		{
+			player->loseHp(uniqueenemies.at(i)->getDamage());;
+			this->uniqueenemies.erase(this->uniqueenemies.begin());
+			//--counter;
+		}
+	}
+}
+
+void GAME::updateMEDKIT()
+{
+	if (this->points%20 ==0 &&MEDSPAWN == false && this->points>0) {
+		this->medkit.push_back(new MEDKIT(rand() % this->window->getSize().x - 20.f, -100.f));
+		printf("MED");
+		MEDSPAWN = true;
+	}
+	for (int i = 0; i < this->medkit.size(); ++i)
+	{
+		this->medkit[i]->update();
+
+		//ลบเวลายานไปล่างสุด
+		if (this->medkit[i]->getBounds().top > this->window->getSize().y)
+		{
+			this->medkit.erase(this->medkit.begin() + i);
+			MEDSPAWN = false;
+		}
+		else if (medkit[i]->getBounds().intersects(this->player->getBounds()))
+		{
+			player->getHp(medkit.at(i)->getHeal());;
+			this->medkit.erase(this->medkit.begin());
+			MEDSPAWN = false;
+			//--counter;
+		}
+	}
+}
+
 void GAME::updateCombat()
 {
 	for (int i = 0; i < this->enemies.size(); i++)
@@ -228,7 +315,6 @@ void GAME::updateCombat()
 		for (size_t k = 0; k < this->bullets.size() && enemy_delete == false; k++) {
 			if (this->enemies[i]->getBounds().intersects(this->bullets[k]->getBounds()))
 			{
-				enemies[i]->loseHpEnemy(1);
 				if (enemies[i]->getHpEnemy() == 0) {
 					this->points += this->enemies[i]->getPoints();
 					delete this->enemies[i];
@@ -236,6 +322,7 @@ void GAME::updateCombat()
 
 					enemy_delete = true;
 				}
+				enemies[i]->loseHpEnemy(1);
 				delete this->bullets[k];
 				this->bullets.erase(this->bullets.begin() + k);
 			}
@@ -268,6 +355,11 @@ void GAME::update()
 
 	this->updateEnemies();
 
+	
+	this->updateuniqueEnemy();
+
+	this->updateMEDKIT();
+
 	this->updateCombat();
 
 	//this->renderGUI();
@@ -296,6 +388,7 @@ void GAME::render()
 	//วาดพื้นหลัง
 
 	this->renderWorld();
+	//this->uniqueenemy->render(this->window,this->uniqueenemy->getType());
 	//Draw all the stuffs
 	this->player->render(*this->window);
 	for (auto* bullet : this->bullets) {
@@ -309,6 +402,16 @@ void GAME::render()
 	for (auto* enemy : this->enemies)
 	{
 		enemy->render(this->window);
+
+	}
+	for (auto* uniqueEnemy : this->uniqueenemies)
+	{
+		uniqueEnemy->render(this->window/*, this->uniqueenemy->getType()*/);
+
+	}
+	for (auto* MEDKIT : this->medkit)
+	{
+		MEDKIT->render(this->window/*, this->uniqueenemy->getType()*/);
 
 	}
 	this->renderGUI();

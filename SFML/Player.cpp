@@ -3,7 +3,7 @@
 void Player::initializeVariables()
 {
 	this->movementSpeed = 5.f;
-	this->attackCooldownMax = 10.f;
+	this->attackCooldownMax = 5.f;
 	this->attackCooldown = this->attackCooldownMax;
 	hpMax_ship = 50;
 	hp_ship = hpMax_ship;
@@ -74,6 +74,14 @@ void Player::loseHp(const int value)
 		this->hp_ship = 0;
 	}
 	printf("%d\n", hp_ship);
+}
+void Player::getHp(const int value)
+{
+	this->hp_ship += value;
+	if (this->hp_ship > 50)
+	{
+		this->hp_ship = 50;
+	}
 }
 void Player::move(const float dirX, const float dirY)
 {

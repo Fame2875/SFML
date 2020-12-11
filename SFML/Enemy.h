@@ -7,6 +7,7 @@ class Enemy
 private:
 	unsigned pointCount;
 	sf::CircleShape shape;
+	
 	int type;
 	int hp;
 	float speed;

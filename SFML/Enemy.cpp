@@ -5,13 +5,14 @@
 void Enemy::initializeVariables()
 {
 	this->pointCount = rand() % 8 + 3; //3-10
-	type = 0;
-	speed = static_cast<float>(this->pointCount/3);
-	 hp	= this->hpMax;
-	 hpMax = static_cast<int>(this->pointCount);;
+	//type = rand() % 3;
+	speed = static_cast<float>(this->pointCount/2);
+	hp = 2;//this->hpMax;
+	 hpMax = static_cast<int>(this->pointCount);
 	 damage = this->pointCount;
-	 points = this->pointCount;
+	 points = 5/*this->pointCount*/;
 }
+
 
 void Enemy::initShape()
 {
@@ -53,6 +54,7 @@ void Enemy::loseHpEnemy(const int value)
 	this->hp -= value;
 	printf("en = %d", hp);
 }
+
 //Function
 void Enemy::update()
 {
